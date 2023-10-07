@@ -130,8 +130,8 @@ const keys = {
       c.fillStyle = "white"
       c.fillRect(0, 0, canvas.width, canvas.height);
       c.save()
-        // c.scale(2, 2)
-        // c.translate(0, -background.image.height + scaledCanvas.height)
+         c.scale(2, 2)
+         c.translate(0, -background.image.height + scaledCanvas.height)
       background.update()
       collisionBlocks.forEach(collisionBlock => {
         collisionBlock.update()
@@ -152,9 +152,9 @@ else if (
 
 else if (
   keys.d.pressed 
-  ) {player.velocity.x = 5}
+  ) {player.velocity.x = 4}
 
-else if (keys.a.pressed) {player.velocity.x = -5}
+else if (keys.a.pressed) {player.velocity.x = -4}
       
   c.restore()    
     }
@@ -189,10 +189,20 @@ const startGame = (lvl) => {
   
   player = new Player({
     position: {
-      x: 0,
-      y: 0
+      x: 15,
+      y: 455
     },
-    collisionBlocks
+    collisionBlocks,
+    imageSrc: './img/viking/viking_walk_right.png',
+    framerate: 8,
+    scale: 1.3,
+    hitbox: 
+       {
+       addX: 10,
+       addY: 10 ,
+       width: 25,
+       height: 30
+     },
   })
   animate(background, player)
 }
