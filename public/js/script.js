@@ -130,8 +130,8 @@ const keys = {
       c.fillStyle = "white"
       c.fillRect(0, 0, canvas.width, canvas.height);
       c.save()
-         c.scale(2, 2)
-         c.translate(0, -background.image.height + scaledCanvas.height)
+       //c.scale(2, 2)
+       //c.translate(0, -background.image.height + scaledCanvas.height)
       background.update()
       collisionBlocks.forEach(collisionBlock => {
         collisionBlock.update()
@@ -189,21 +189,21 @@ const startGame = (lvl) => {
   
   player = new Player({
     position: {
-      x: 15,
-      y: 455
+      x: 520,
+      y: 180
     },
     collisionBlocks,
     imageSrc: './img/viking/viking_walk_right.png',
     framerate: 8,
     scale: 1.3,
-    hitbox: 
-       {
-       addX: 10,
-       addY: 10 ,
-       width: 25,
-       height: 30
+    myHitbox: {
+       addX: 11,
+       addY: 12 ,
+       width: 22,
+       height: 28,
      },
   })
+  console.log(player.myHitbox)
   animate(background, player)
 }
  ////////////////////////////////////////////////////////////////   
@@ -224,7 +224,7 @@ const startGame = (lvl) => {
           keys.control.pressed = true;
         break
         case 'w':
-           if (player.velocity.y == 0||player.velocity.y == 0.8){
+           if (player.velocity.y == 0 | player.velocity.y == 0.8){
           player.velocity.y = -12;
          }
         break

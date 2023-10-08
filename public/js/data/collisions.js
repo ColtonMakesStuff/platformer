@@ -35,7 +35,7 @@ let twoLeft =  object2.position.x;
 let twoRight = object2.position.x + object2.width;
 let twoTop = object2.position.y;
 let twoBottom = object2.position.y + object2.height
-
+// console.log(object1)
 //changes hitbox of collision block if only the top is solid
 if (object2.type == 'solidTop'){
  twoBottom = object2.position.y -8

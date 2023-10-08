@@ -6,7 +6,7 @@ let blockedRight = false;
 
 // this housees the players attributes as well as can be used for making non-player objects, also this iterates over the collision checks
 class Player extends Sprite{
-    constructor({position, collisionBlocks, imageSrc, framerate, scale =1.6, hitbox}){
+    constructor({position, collisionBlocks, imageSrc, framerate, scale = 1.6, myHitbox }){
         super({ imageSrc, framerate, scale })
         this.collisionBlocks = collisionBlocks
       this.position = position
@@ -14,36 +14,35 @@ class Player extends Sprite{
        x: 25,
        y: 1
       }
-      this.myHitbox = hitbox
+      this.myHitbox = myHitbox
       this.hitbox = {
         position: {
         x: this.position.x + this.myHitbox.addX,
         y: this.position.y + this.myHitbox.addY,
       },
-      width: this.myHitbox.width,
-      height: this.myHitbox.height
+      width:this.myHitbox.width,
+      height:this.myHitbox.height
     }
      }
 
     update(){
-        
         this.updateFrames()
-        
+        this.updateHitbox()
 
-        c.fillStyle = 'rgba(0, 255, 0, 0.2)'
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
-
-        c.fillStyle = 'rgba(255, 0, 0, 0.2)'
-        c.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height)
-
-
-
-     this.draw()
-     this.position.x += this.velocity.x
-     this.checkForSideCollsions()
-     this.applyGravity()
-     this.updateHitbox()
-     this.checkForVerticalCollsions()
+        this.draw()
+            //   //shows image bound box
+            //   c.fillStyle = 'rgba(0, 255, 0, 0.2)'
+            //   c.fillRect(this.position.x, this.position.y, this.width, this.height)
+            //   //shows hitbox
+            //   c.fillStyle = 'rgba(255, 0, 0, 0.6)'
+            //   c.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height)
+     
+        this.position.x += this.velocity.x
+        this.updateHitbox()
+        this.checkForSideCollsions()
+        this.applyGravity()
+        this.updateHitbox()
+        this.checkForVerticalCollsions()
     }
     updateHitbox(){
         this.hitbox = {
@@ -51,8 +50,8 @@ class Player extends Sprite{
             x: this.position.x + this.myHitbox.addX,
             y: this.position.y + this.myHitbox.addY,
           },
-          width: this.myHitbox.width,
-          height: this.myHitbox.height
+          width:this.myHitbox.width,
+          height:this.myHitbox.height
         }
     }
      applyGravity() {
@@ -71,17 +70,26 @@ checkForSideCollsions(){
             ) {
 //removes movement conditions from spike blocks and logs ouch                
 if (collisionBlock.type == 'spikes'){
-    console.log('OUCH!!')
+    // console.log('OUCH!!')
    } else  {               
-if (this.velocity.x > 0){
+if (collisionBlock.type == 'solidTop') {break}else if
+(this.velocity.x > 0){
     this.velocity.x = 0
-    const offset = this.hitbox.position.x - this.position.x + this.hitbox.width;
-    this.position.x = collisionBlock.position.x - this.width -0.01
+
+    const offset =
+      this.hitbox.position.x - this.position.x + this.hitbox.width
+
+    this.position.x = collisionBlock.position.x - offset - 0.01
+    break
 }
 if (this.velocity.x < 0){
     this.velocity.x = 0
-    const offset = this.hitbox.position.x - this.position.x;
-    this.position.x = collisionBlock.position.x + collisionBlock.width - this.width  + 0.01
+
+    const offset = this.hitbox.position.x - this.position.x
+
+    this.position.x =
+      collisionBlock.position.x + collisionBlock.width - offset + 0.01
+    break
      }
     }
    }
@@ -101,25 +109,36 @@ checkForVerticalCollsions(){
 // essentialy it only has a different action if jumping up through the block, otherwise it acts the same as other blocks
  
 if (collisionBlock.type == 'solidTop' && this.velocity.y < 0){
-    const offset = this.hitbox.position.y - this.position.y ;
-    this.position.y = collisionBlock.position.y - this.height + 0.01
+   
+
+    const offset =
+      this.hitbox.position.y - this.position.y + this.hitbox.height 
+
+    this.position.y = collisionBlock.position.y - offset + .01
+    break
 } 
 //removes movement conditions from spike blocks and logs ouch                
 else if (collisionBlock.type == 'spikes'){
-        console.log('OUCH!!')
+        // console.log('OUCH!!')
      
 } else {   
 if (this.velocity.y > 0){
     this.velocity.y = 0
-    const offset = 
-        this.hitbox.position.y - this.position.y + this.hitbox.height;
+
+    const offset =
+      this.hitbox.position.y - this.position.y + this.hitbox.height
+
     this.position.y = collisionBlock.position.y - offset - 0.01
+    break
 } 
 if (this.velocity.y < 0){
     this.velocity.y = 0
-    const offset = 
-        this.hitbox.position.y - this.position.y ;
-    this.position.y = collisionBlock.position.y + collisionBlock.height - offset + 0.01
+
+    const offset = this.hitbox.position.y - this.position.y
+
+    this.position.y =
+      collisionBlock.position.y + collisionBlock.height - offset + 0.01
+    break
         }
        }    
       }

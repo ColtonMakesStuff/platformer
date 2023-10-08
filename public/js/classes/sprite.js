@@ -35,15 +35,15 @@ class Sprite {
 
       c.drawImage(
         this.image,
-         cropbox.position.x, 
-         cropbox.position.y, 
-         cropbox.width,
-         cropbox.height,
-        this.position.x, 
+        cropbox.position.x,
+        cropbox.position.y,
+        cropbox.width,
+        cropbox.height,
+        this.position.x,
         this.position.y,
-         this.width,
-         this.height
-        )
+        this.width,
+        this.height
+      )
     }
     update() {
       this.draw()
@@ -51,11 +51,15 @@ class Sprite {
     }
     updateFrames(){
       this.elapsedFrames++
-      if (this.elapsedFrames % this.frameBuffer === 0 ) {
-      if (this.currentFrame < this.framerate - 1 ){
+      
+      if (this.elapsedFrames % this.frameBuffer === 0 ) 
+      {
+      if (this.currentFrame < this.framerate - 1 )
+      {
       this.currentFrame++,
       this.elapsedFrames = 0
-    } else {this.currentFrame = 0}
+    } else {
+      this.currentFrame = 0}
     }}
   }
 
