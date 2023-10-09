@@ -6,8 +6,8 @@ let blockedRight = false;
 
 // this housees the players attributes as well as can be used for making non-player objects, also this iterates over the collision checks
 class Player extends Sprite{
-    constructor({position, collisionBlocks, imageSrc, framerate, scale = 1.6, myHitbox }){
-        super({ imageSrc, framerate, scale })
+    constructor({position, collisionBlocks, imageSrc, framerate, frameBuffer, scale = 1.6, myHitbox, spriteAnimations }){
+        super({ imageSrc,frameBuffer, framerate, scale })
         this.collisionBlocks = collisionBlocks
       this.position = position
       this.velocity = {
@@ -23,19 +23,32 @@ class Player extends Sprite{
       width:this.myHitbox.width,
       height:this.myHitbox.height
     }
-     }
+    this.lastDirection = 'right'
+    this.spriteAnimations = spriteAnimations;
+    for (let key in this.spriteAnimations ){
+        const image = new Image()
+            image.src = this.spriteAnimations[key].imageSrc
 
+            this.spriteAnimations[key].image = image
+        }
+     }
+switchSprite(key){
+    if (this.image --- this.spriteAnimations[key]){return}
+    this.image = this.spriteAnimations[key].image
+    this.framerate = this.spriteAnimations[key].framerate
+    this.frameBuffer = this.spriteAnimations[key].frameBuffer
+}
     update(){
         this.updateFrames()
         this.updateHitbox()
 
         this.draw()
             //   //shows image bound box
-            //   c.fillStyle = 'rgba(0, 255, 0, 0.2)'
-            //   c.fillRect(this.position.x, this.position.y, this.width, this.height)
-            //   //shows hitbox
-            //   c.fillStyle = 'rgba(255, 0, 0, 0.6)'
-            //   c.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height)
+               //c.fillStyle = 'rgba(0, 255, 0, 0.2)'
+               //c.fillRect(this.position.x, this.position.y, this.width, this.height)
+               //shows hitbox
+               //c.fillStyle = 'rgba(255, 0, 0, 0.6)'
+              //c.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height)
      
         this.position.x += this.velocity.x
         this.updateHitbox()

@@ -117,6 +117,9 @@ const keys = {
       },
       control: {
         pressed: false,
+      },
+      f: {
+        pressed: false,
       }
     }
 ////////////////////////////////////////////////////////////////
@@ -143,19 +146,42 @@ player.velocity.x = 0
 if (
   keys.d.pressed && 
   keys.control.pressed 
-  ){ player.velocity.x = 7}
+  ){ 
+    player.switchSprite('moveRight');
+    player.velocity.x = 7
+    player.lastDirection = 'right'}
 
 else if (
   keys.a.pressed && 
   keys.control.pressed 
-  ) {player.velocity.x = -7}
+  ) {
+    player.switchSprite('moveLeft');
+    player.velocity.x = -7
+    player.lastDirection = 'left'}
 
 else if (
   keys.d.pressed 
-  ) {player.velocity.x = 4}
+  ) {
+    player.switchSprite('moveRight');
+    console.log(player.framerate)
+    player.velocity.x = 4
+    player.lastDirection = 'right'}
 
-else if (keys.a.pressed) {player.velocity.x = -4}
-      
+else if (keys.a.pressed) {
+  player.switchSprite('moveLeft');
+  player.velocity.x = -4
+  player.lastDirection = 'left'}
+
+  else if (keys.f.pressed) {
+    if (player.lastDirection === 'right') player.switchSprite('attackRight')
+    else player.switchSprite('attackLeft')
+    }
+  
+
+  else if (player.velocity.y === 0) {
+    if (player.lastDirection === 'right') player.switchSprite('idleRight')
+    else player.switchSprite('idleLeft')
+  }     
   c.restore()    
     }
  //////////////////////////////////////////////////////////////// 
@@ -193,12 +219,61 @@ const startGame = (lvl) => {
       y: 180
     },
     collisionBlocks,
+    imageSrc: './img/viking/viking_idle_right.png',
+    framerate: 7,
+    frameBuffer: 4,
+    spriteAnimations :{
+  moveRight: {
     imageSrc: './img/viking/viking_walk_right.png',
     framerate: 8,
-    scale: 1.3,
+    frameBuffer: 1
+  },
+  moveLeft: {
+    imageSrc: './img/viking/viking_walk_left.png',
+    framerate: 8,
+    frameBuffer: 1
+  },
+  attackRight: {
+    imageSrc: './img/viking/viking_sword_slice_right.png',
+    framerate: 5,
+    frameBuffer: 3
+  },
+  attackLeft: {
+    imageSrc: './img/viking/viking_sword_slice_left.png',
+    framerate: 6,
+    frameBuffer: 3
+  },
+  idleLeft: {
+    imageSrc: './img/viking/viking_idle_left.png',
+    framerate: 7,
+    frameBuffer: 3
+  },
+  idleRight: {
+    imageSrc: './img/viking/viking_idle_right.png',
+    framerate: 7,
+    frameBuffer: 3
+  },
+  jumpyViking: {
+    imageSrc: './img/viking/jumpy_viking.png',
+    framerate: 1,
+    frameBuffer: 1
+  },
+  dedViking: {
+    imageSrc: './img/viking/ded_viking.png',
+    framerate: 1,
+    frameBuffer: 1
+  },
+  ghostViking: {
+    imageSrc: './img/viking/viking_ghost.png',
+    framerate: 1,
+    frameBuffer: 1
+  },
+
+  },
+    scale: 1.6,
     myHitbox: {
        addX: 11,
-       addY: 12 ,
+       addY: 20 ,
        width: 22,
        height: 28,
      },
@@ -223,12 +298,22 @@ const startGame = (lvl) => {
           console.log("control")
           keys.control.pressed = true;
         break
+        case 'f':
+          console.log("f")
+          keys.f.pressed = true;
+        break
         case 'w':
-           if (player.velocity.y == 0 | player.velocity.y == 0.8){
+           if (player.velocity.y == 0 || player.velocity.y == 0.8){
           player.velocity.y = -12;
+          player.switchSprite('jumpyViking');
+           if (player.velocity.y === 0) {
+            if (player.lastDirection === 'right') player.switchSprite('idleRight')
+            else player.switchSprite('idleLeft')
          }
+        }
         break
       }
+      
   ////////////////////////////////////////////////////////////////
   
 
@@ -242,6 +327,10 @@ const startGame = (lvl) => {
         break
         case 'a':
           keys.a.pressed = false;
+        break
+        case 'f':
+          console.log("f")
+          keys.f.pressed = false;
         break
         case 'Control':
           
