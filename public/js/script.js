@@ -15,8 +15,8 @@ canvas.width = 1024
 canvas.height = 576
 
 const scaledCanvas = {
-  width: canvas.width /2,
-  height: canvas.height /2
+  width: canvas.width /1.5,
+  height: canvas.height /1.5
 }
 let background;
 let player;
@@ -127,14 +127,20 @@ const keys = {
 
 // this loops over everything that needs to be checked every frame
 ////////////////////////////////////////////////////////////////
+let gameCamera = {
+  position: {
+  x: 0,
+  y: -576 + scaledCanvas.height
+  },
+  }
     const animate = () => {
 
       window.requestAnimationFrame(animate)
       c.fillStyle = "white"
       c.fillRect(0, 0, canvas.width, canvas.height);
       c.save()
-       //c.scale(2, 2)
-       //c.translate(0, -background.image.height + scaledCanvas.height)
+       c.scale(1.5, 1.5)
+       c.translate(gameCamera.position.x, gameCamera.position.y)
       background.update()
       collisionBlocks.forEach(collisionBlock => {
         collisionBlock.update()
@@ -148,29 +154,34 @@ if (
   keys.control.pressed 
   ){ 
     player.switchSprite('moveRight');
-    player.velocity.x = 7
-    player.lastDirection = 'right'}
+    player.velocity.x = 5
+    player.lastDirection = 'right'
+    player.panCameraRight({canvas, gameCamera})}
 
 else if (
   keys.a.pressed && 
   keys.control.pressed 
   ) {
     player.switchSprite('moveLeft');
-    player.velocity.x = -7
-    player.lastDirection = 'left'}
+    player.velocity.x = -5
+    player.lastDirection = 'left'
+    player.panCameraLeft({canvas, gameCamera})}
+
 
 else if (
   keys.d.pressed 
   ) {
     player.switchSprite('moveRight');
-    console.log(player.framerate)
     player.velocity.x = 4
-    player.lastDirection = 'right'}
+    player.lastDirection = 'right'
+    player.panCameraRight({canvas, gameCamera})
+  }
 
 else if (keys.a.pressed) {
   player.switchSprite('moveLeft');
   player.velocity.x = -4
-  player.lastDirection = 'left'}
+  player.lastDirection = 'left'
+  player.panCameraLeft({canvas, gameCamera})}
 
   else if (keys.f.pressed) {
     if (player.lastDirection === 'right') player.switchSprite('attackRight')
@@ -181,7 +192,13 @@ else if (keys.a.pressed) {
   else if (player.velocity.y === 0) {
     if (player.lastDirection === 'right') player.switchSprite('idleRight')
     else player.switchSprite('idleLeft')
-  }     
+  } 
+  if (player.velocity.y < 0){
+    player.panCameraUp({canvas, gameCamera})
+  }
+  if (player.velocity.y > .8){
+    player.panCameraDown({canvas, gameCamera})
+  }
   c.restore()    
     }
  //////////////////////////////////////////////////////////////// 
@@ -268,6 +285,16 @@ const startGame = (lvl) => {
     framerate: 1,
     frameBuffer: 1
   },
+  hurtRight: {
+    imageSrc: './img/viking/viking_hurt_right.png',
+    framerate: 2,
+    frameBuffer: 2
+  },
+  hurtLeft: {
+    imageSrc: './img/viking/hurt_viking_left.png',
+    framerate: 2,
+    frameBuffer: 2
+  },
 
   },
     scale: 1.6,
@@ -295,17 +322,16 @@ const startGame = (lvl) => {
           keys.a.pressed = true;
         break
         case 'Control':
-          console.log("control")
           keys.control.pressed = true;
         break
         case 'f':
-          console.log("f")
           keys.f.pressed = true;
         break
         case 'w':
            if (player.velocity.y == 0 || player.velocity.y == 0.8){
           player.velocity.y = -12;
           player.switchSprite('jumpyViking');
+         
            if (player.velocity.y === 0) {
             if (player.lastDirection === 'right') player.switchSprite('idleRight')
             else player.switchSprite('idleLeft')

@@ -1,4 +1,4 @@
-import { c, gravity, keys } from "../script.js";
+import { c, gravity } from "../script.js";
 import { collision } from "../data/collisions.js";
 import { Sprite } from "./sprite.js";
 let blockedLeft = false;
@@ -22,9 +22,18 @@ class Player extends Sprite{
       },
       width:this.myHitbox.width,
       height:this.myHitbox.height
+     
     }
     this.lastDirection = 'right'
     this.spriteAnimations = spriteAnimations;
+     this.camera = {
+        position: {
+        x: this.position.x - 200,
+        y: this.position.y - 100
+       },
+       height: 250,
+       width:400
+     } 
     for (let key in this.spriteAnimations ){
         const image = new Image()
             image.src = this.spriteAnimations[key].imageSrc
@@ -33,17 +42,27 @@ class Player extends Sprite{
         }
      }
 switchSprite(key){
-    if (this.image --- this.spriteAnimations[key]){return}
+    if (this.image === this.spriteAnimations[key].image ){return}
+    this.currentFrame= 0
     this.image = this.spriteAnimations[key].image
     this.framerate = this.spriteAnimations[key].framerate
     this.frameBuffer = this.spriteAnimations[key].frameBuffer
 }
     update(){
         this.updateFrames()
+        this.updateCamera()
         this.updateHitbox()
 
         this.draw()
-            //   //shows image bound box
+               // shows camera
+            // c.fillStyle = 'rgba(0, 0, 255, 0.3)'
+            // c.fillRect(
+            //     this.camera.position.x, 
+            //     this.camera.position.y, 
+            //     this.camera.width, 
+            //     this.camera.height
+            //     )
+                //   //shows image bound box
                //c.fillStyle = 'rgba(0, 255, 0, 0.2)'
                //c.fillRect(this.position.x, this.position.y, this.width, this.height)
                //shows hitbox
@@ -67,7 +86,46 @@ switchSprite(key){
           height:this.myHitbox.height
         }
     }
-     applyGravity() {
+    updateCamera(){
+    this.camera = {
+        position: {
+            x: this.position.x - 180,
+            y: this.position.y - 100
+       },
+       height: 250,
+       width:400
+     } 
+    }
+    panCameraRight({canvas, gameCamera}){
+    const cameraRight = this.camera.position.x + this.camera.width
+        if (cameraRight >= (canvas.width / 1.5 )+ Math.abs(gameCamera.position.x) 
+    && cameraRight < canvas.width - 5){
+            gameCamera.position.x -= this.velocity.x;
+            }
+    }
+    panCameraLeft({canvas, gameCamera}){
+        
+        const cameraLeft = this.camera.position.x 
+            if (cameraLeft <= Math.abs(gameCamera.position.x) && cameraLeft > 5) {
+                gameCamera.position.x -= this.velocity.x;
+                }
+        }
+    panCameraUp({canvas, gameCamera}){
+        const cameraTop = this.camera.position.y
+        
+            if (cameraTop <=  Math.abs(gameCamera.position.y) && cameraTop > 5){
+                gameCamera.position.y -= this.velocity.y;
+
+                }
+        }
+    panCameraDown({canvas, gameCamera}){
+        const cameraBottom = this.camera.position.y + this.camera.height
+            if (cameraBottom >= (canvas.height / 1.5 )+ Math.abs(gameCamera.position.y) 
+        && cameraBottom < canvas.height - 5){
+                gameCamera.position.y -= this.velocity.y;
+                }
+        }   
+    applyGravity() {
         this.position.y += this.velocity.y;
         this.velocity.y += gravity
     }

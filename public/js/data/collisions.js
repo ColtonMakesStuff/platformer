@@ -38,7 +38,7 @@ let twoBottom = object2.position.y + object2.height
 // console.log(object1)
 //changes hitbox of collision block if only the top is solid
 if (object2.type == 'solidTop'){
- twoBottom = object2.position.y -8
+ twoBottom = object2.position.y -10
     }  
 //sets the spikes heights a bit lower than the other blocks     
 if (object2.type == 'spikes'){
