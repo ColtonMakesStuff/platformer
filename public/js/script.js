@@ -1,33 +1,50 @@
 // compile everything you need and declare variables that will be used later
 ////////////////////////////////////////////////////////////////
-import { levelOneArray } from "./data/collisions.js";
+import { levelOneArray, levelOneLongArray } from "./data/collisions.js";
 import { Sprite } from "./classes/sprite.js";
 import { CollisionBlock } from "./classes/CollisionBlock.js";
-import { Player, blockedLeft, blockedRight } from "./classes/player.js";
+import { Player} from "./classes/player.js";
+import { Entity} from "./classes/Entity.js";
 
 const canvas = document.getElementById("canvas")
 const c = canvas.getContext("2d");
+ const backgroundCanvas = document.getElementById("backgroundCanvas")
+ const b = backgroundCanvas.getContext("2d");
+
 let currentLevel;
 
 const collisionBlocks = []
+let entities = []
 
 canvas.width = 1024
 canvas.height = 576
+ backgroundCanvas.width = 1024
+backgroundCanvas.height = 576
 
 const scaledCanvas = {
   width: canvas.width /1.5,
   height: canvas.height /1.5
 }
 let background;
+let actualBackground;
 let player;
 let gravity = .8
+ actualBackground = new Sprite({
+   position: {
+     x:0,
+     y:0,
+   },
+   imageSrc: './img/map_background.png',
+ });
+ b.drawImage(actualBackground.image, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+
 ////////////////////////////////////////////////////////////////
 
 
 // converts the map array into an object
 ////////////////////////////////////////////////////////////////
  const convertTo2D = (levelArray) => (levelArray).reduce((accumulator, val, idx) => {
-  let row = Math.floor(idx / 32);
+  let row = Math.floor(idx / 60);
   if (!accumulator[row]) {
     accumulator[row] = [];
   }
@@ -39,6 +56,7 @@ let gravity = .8
 
 // this makes an array of all the collation blocks and includes their block type position and color code for visualizing, if you wanna see the game without the colors overlaid then comment out the fillstyle color in the collision block class
 ////////////////////////////////////////////////////////////////
+
 const getCollisionBlocks = (lvl) => {
   Object.keys(lvl).forEach((key, y) => {
     lvl[key].forEach((tile, x) => {
@@ -100,7 +118,46 @@ const getCollisionBlocks = (lvl) => {
            type: "ladder"
          })
        )
-     } 
+     } else if (tile === 78) {
+      collisionBlocks.push(
+        new CollisionBlock({
+          position: {
+            x: x * 32,
+            y: y * 32,
+          },
+          color: 'rgba(0,0,245,0.5)',
+          type: "mobRestrictor"
+        })
+      )
+    } else if (tile === 60) {
+      entities.push(
+        new Entity({
+          position: {
+            x: x * 32,
+            y: y * 32,
+          },
+          collisionBlocks,
+          type: "Mushroomy",
+          scale: 1.6,
+          imageSrc: './img/mushroomy/mushroomy_walk.png',
+          framerate: 6,
+          frameBuffer: 8,
+          // spriteAnimations :{
+          //       moveRight: {
+          //         imageSrc: './img/viking/viking_walk_right.png',
+          //         framerate: 8,
+          //         frameBuffer: 1
+          // }},
+          myHitbox: {
+                addX: 11,
+                addY: 20 ,
+                width: 28,
+                height: 28,
+          },
+          movement: true
+  })
+      )
+    } 
   })
 });}
 ////////////////////////////////////////////////////////////////
@@ -130,21 +187,27 @@ const keys = {
 let gameCamera = {
   position: {
   x: 0,
-  y: -576 + scaledCanvas.height
+  y: - 576 + scaledCanvas.height
   },
   }
     const animate = () => {
-
+      
       window.requestAnimationFrame(animate)
-      c.fillStyle = "white"
-      c.fillRect(0, 0, canvas.width, canvas.height);
+      c.clearRect(0, 0, canvas.width, canvas.height);
+
+      
       c.save()
        c.scale(1.5, 1.5)
        c.translate(gameCamera.position.x, gameCamera.position.y)
       background.update()
+     
       collisionBlocks.forEach(collisionBlock => {
         collisionBlock.update()
       }) 
+      entities.forEach((element) => {
+        element.update()
+       
+      });
       player.update()
 
 player.velocity.x = 0 
@@ -207,7 +270,8 @@ else if (keys.a.pressed) {
  // this calls a function that starts the game
  ////////////////////////////////////////////////////////////////
 window.onload = function() {
-      startGame(levelOneArray)
+  
+      startGame(levelOneLongArray)
       
   }
  //////////////////////////////////////////////////////////////// 
@@ -216,25 +280,34 @@ window.onload = function() {
  // this compiles pretty much all of the assets as well, as starts the game loop
  ////////////////////////////////////////////////////////////////
 const startGame = (lvl) => {
-
+ 
   currentLevel = convertTo2D(lvl)
   console.log(currentLevel)
   getCollisionBlocks(currentLevel)
   console.log(collisionBlocks.length)
   
-  background = new Sprite({
-    position: {
-      x:0,
-      y:0,
-    },
-    imageSrc: './img/gameMapOne.png',
-  });
-  
+   background = new Sprite({
+     position: {
+       x:0,
+       y:0,
+     },
+     imageSrc: './img/long_map_test.png',
+   });
+    gravity = .8
+   actualBackground = new Sprite({
+     position: {
+       x:0,
+       y:0,
+     },
+     imageSrc: './img/map_background.png',
+   });
+   b.drawImage(actualBackground.image, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
   player = new Player({
     position: {
-      x: 520,
-      y: 180
+      x: 5,
+      y: 400
     },
+    entities,
     collisionBlocks,
     imageSrc: './img/viking/viking_idle_right.png',
     framerate: 7,
@@ -371,4 +444,4 @@ const startGame = (lvl) => {
 
 
    ////////////////////////////////////////////////////////////////
-    export {c, gravity, keys, startGame };
+    export {c, gravity, keys, startGame, background };
