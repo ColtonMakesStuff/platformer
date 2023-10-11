@@ -129,7 +129,18 @@ const getCollisionBlocks = (lvl) => {
           type: "mobRestrictor"
         })
       )
-    } else if (tile === 60) {
+    } else if (tile === 77) {
+      collisionBlocks.push(
+        new CollisionBlock({
+          position: {
+            x: x * 32,
+            y: y * 32,
+          },
+          color: 'rgba(0,0,245,0.5)',
+          type: "bouncey"
+        })
+      )
+    }else if (tile === 60) {
       entityArray.push(
         new Entity({
           position: {
@@ -137,7 +148,7 @@ const getCollisionBlocks = (lvl) => {
             y: y * 32,
           },
           collisionBlocks,
-          type: "Mushroomy",
+          type: "mushroomy",
           scale: 1.6,
           imageSrc: './img/mushroomy/mushroomy_walk.png',
           framerate: 6,
@@ -154,10 +165,40 @@ const getCollisionBlocks = (lvl) => {
                 width: 28,
                 height: 28,
           },
-          movement: true
+          movement: true,
+          gravity: true
   })
       )
-    } 
+    } else if (tile === 40) {
+      entityArray.push(
+        new Entity({
+          position: {
+            x: x * 32,
+            y: y * 32,
+          },
+          collisionBlocks,
+          type: "coin",
+          scale: 1.3,
+          imageSrc: './img/spinning_coin.png',
+          framerate: 5,
+          frameBuffer: 9,
+          // spriteAnimations :{
+          //       moveRight: {
+          //         imageSrc: './img/viking/viking_walk_right.png',
+          //         framerate: 8,
+          //         frameBuffer: 1
+          // }},
+          myHitbox: {
+                addX: 11,
+                addY: 20 ,
+                width: 28,
+                height: 28,
+          },
+          movement: false,
+          gravity: false
+  })
+      )
+    }
   })
 });}
 ////////////////////////////////////////////////////////////////

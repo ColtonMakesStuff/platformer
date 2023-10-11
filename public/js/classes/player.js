@@ -33,7 +33,7 @@ class Player extends Sprite {
       this.playerHealth = 5
     }
   checkPlayerHealth(){
-    if (this.playerHealth == 0){ 
+    if (this.playerHealth < 1){ 
     console.log("you un-alived")}
   }
     //establishes buffer for health loss so it can only be lost every 50 frames when in constant health loss situation(spikes? fire?)
@@ -207,7 +207,21 @@ checkForVerticalCollsions(){
                 this.updateHealthTimeout()
                 
         } else {   
-        if (this.velocity.y > 0){
+        if ( this.velocity.y > 7 && collisionBlock.type == 'bouncey'){
+            
+            const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height
+            this.position.y = collisionBlock.position.y - offset - 0.01
+            this.velocity.y = -15
+            break
+        } else if ( this.velocity.y > 0 && collisionBlock.type == 'bouncey'){
+             const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height
+            this.position.y = collisionBlock.position.y - offset - 0.01
+            this.velocity.y = -6
+            break
+        } else if ( this.velocity.y < 0 && collisionBlock.type == 'bouncey'){break}
+        else if (this.velocity.y > 0){
             this.velocity.y = 0
             const offset =
             this.hitbox.position.y - this.position.y + this.hitbox.height
@@ -237,12 +251,8 @@ checkForEntityCollsions(){
             })
             ) {
 //removes movement conditions from spike blocks and logs ouch                
-console.log(entity)
-
+console.log(entity.type)
 if (entity.type == 'mushroomy') {
-    //TODO have player be hurt or have the enemy be squashed 
-   
-}
 if(this.velocity.y > 0 && (this.position.y) < (entity.position.y)){
     this.velocity.y = -6;
 console.log('squished him')
@@ -267,13 +277,13 @@ this.velocity.y = -3
     
     break
 }
-
-
-
+ } else if (entity.type == 'coin'){
+    entityArray.splice(i, 1)
+    console.log('player got a point!')
     }
    }
   }
-
+}
 update(){
     this.updateFrames()
     this.updateCamera()

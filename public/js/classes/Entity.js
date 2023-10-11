@@ -6,7 +6,7 @@ let blockedRight = false;
 
 // this housees the players attributes as well as can be used for making non-player objects, also this iterates over the collision checks
 class Entity extends Sprite{
-    constructor({position, collisionBlocks, imageSrc, framerate, frameBuffer, scale = 1.6, myHitbox, spriteAnimations }){
+    constructor({position, collisionBlocks, imageSrc, framerate, frameBuffer, scale = 1.6, myHitbox, spriteAnimations, gravity, movement, type }){
         super({ imageSrc,frameBuffer, framerate, scale })
         this.collisionBlocks = collisionBlocks
       this.position = position
@@ -24,6 +24,15 @@ class Entity extends Sprite{
       height:this.myHitbox.height
      
     }
+    this.type = type;
+    this.movement = movement;
+    this.gravity = gravity;
+    if (this.gravity == false){
+        this.velocity.y = 0
+    };
+    if (this.movement == false){
+        this.velocity.x = 0
+    };
     this.lastDirection = 'right'
     this.spriteAnimations = spriteAnimations;
     for (let key in this.spriteAnimations ){
@@ -72,11 +81,13 @@ switchSprite(key){
         }
     }
     applyGravity() {
+        if (this.gravity == true) {
         this.position.y += this.velocity.y;
-        this.velocity.y += gravity
+        this.velocity.y += gravity}
     }
     // checks side the side
 checkForSideCollsions(){
+    if (this.movement === true) {
         for (let i = 0; i < this.collisionBlocks.length; i++) {
             const collisionBlock = this.collisionBlocks[i];
             if (
@@ -113,8 +124,11 @@ checkForSideCollsions(){
    }
   }
  }
+}
     // check vertical collisions
 checkForVerticalCollsions(){
+    if (this.movement === true) {
+    
         for (let i = 0; i < this.collisionBlocks.length; i++) {
             const collisionBlock = this.collisionBlocks[i];
             if (
@@ -161,7 +175,7 @@ if (this.velocity.y < 0){
        }    
       }
      }
-     }  
+     }  }
 }
 export {Entity, blockedLeft, blockedRight};
 
