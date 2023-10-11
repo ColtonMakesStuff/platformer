@@ -465,7 +465,6 @@ const startGame = (lvl) => {
 // and key down event listener is for user input
  ////////////////////////////////////////////////////////////////   
     addEventListener("keydown", (event) => {
-      console.log(event)
       switch (event.key) {
         case 'd':
           keys.d.pressed = true;
@@ -541,6 +540,10 @@ const startGame = (lvl) => {
           keys.S.pressed = false;
         break
         case 'Shift':
+          keys.A.pressed = false;
+          keys.D.pressed = false;
+          keys.W.pressed = false;
+          keys.S.pressed = false;
           keys.shift.pressed = false;
         break
         

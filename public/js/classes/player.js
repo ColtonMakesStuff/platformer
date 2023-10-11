@@ -185,18 +185,20 @@ ladderTypeCheck(){
     for (let i = 0; i < this.collisionBlocks.length; i++) {
         const collisionBlock = this.collisionBlocks[i];
         if (collisionBlock.type != 'mobRestrictor' && collisionBlock.type === 'ladder'){
-            onALadder = true
+            onALadder = false
         if (
             collision({
             object1: this.hitbox,
             object2: collisionBlock,
         })){
             if (collisionBlock.type == 'ladder' && keys.A.pressed  == true){
+                onALadder = true
                 console.log("i should be left")
                 this.velocity.y = 0 
                 this.position.x -= 2
             } else
             if (collisionBlock.type == 'ladder' && keys.W.pressed == true){
+                onALadder = true
                 console.log("i should be up")
                 this.velocity.y = 0 
                 this.position.y -= 2 
@@ -204,11 +206,13 @@ ladderTypeCheck(){
                 
             } else 
             if (collisionBlock.type == 'ladder' && keys.S.pressed  == true){
+                onALadder = true
                 console.log("i should be down")
                 this.velocity.y = 0 
                 this.position.y += 2 
             } else
             if (collisionBlock.type == 'ladder' && keys.D.pressed == true){
+                onALadder = true
                 console.log("i should be right")
                 this.velocity.y = 0 
                 this.position.x += 2 
@@ -216,7 +220,8 @@ ladderTypeCheck(){
             } 
             
              else
-             if (collisionBlock.type == 'ladder' && keys.shift.pressed === true){
+             if (collisionBlock.type == 'ladder' && keys.shift.pressed == true){
+                onALadder = true
                console.log("i should be sticky")
               this.velocity.y= 0
              } 
