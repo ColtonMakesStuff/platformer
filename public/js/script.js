@@ -3,7 +3,7 @@
 import { levelOneArray, levelOneLongArray } from "./data/collisions.js";
 import { Sprite } from "./classes/sprite.js";
 import { CollisionBlock } from "./classes/CollisionBlock.js";
-import { Player} from "./classes/player.js";
+import { Player, onALadder} from "./classes/player.js";
 import { Entity} from "./classes/Entity.js";
 
 const canvas = document.getElementById("canvas")
@@ -218,6 +218,21 @@ const keys = {
       },
       f: {
         pressed: false,
+      },
+      D: {
+        pressed: false,
+      },
+      A: {
+        pressed: false,
+      },
+      W: {
+        pressed: false,
+      },
+      S: {
+        pressed: false,
+      },
+      shift: {
+        pressed: false,
       }
     }
 ////////////////////////////////////////////////////////////////
@@ -232,7 +247,7 @@ let gameCamera = {
   },
   }
     const animate = () => {
-      
+     
       window.requestAnimationFrame(animate)
       c.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -251,49 +266,70 @@ let gameCamera = {
       });
       player.update()
 
-player.velocity.x = 0 
 
+player.velocity.x = 0  
 if (
-  keys.d.pressed && 
-  keys.control.pressed 
+  keys.d.pressed && keys.control.pressed 
   ){ 
-    player.switchSprite('moveRight');
-    player.velocity.x = 5
-    player.lastDirection = 'right'
-    player.panCameraRight({canvas, gameCamera})}
-
+        player.switchSprite('moveRight');
+        player.velocity.x = 5
+        player.lastDirection = 'right'
+        player.panCameraRight({canvas, gameCamera})
+  }
 else if (
-  keys.a.pressed && 
-  keys.control.pressed 
-  ) {
-    player.switchSprite('moveLeft');
-    player.velocity.x = -5
-    player.lastDirection = 'left'
-    player.panCameraLeft({canvas, gameCamera})}
-
-
+      keys.D.pressed &&  keys.shift.pressed && onALadder == false || keys.d.pressed && keys.shift.pressed && onALadder == false 
+      ){ 
+        player.switchSprite('moveRight');
+        player.velocity.x = 2
+        player.lastDirection = 'right'
+        player.panCameraRight({canvas, gameCamera})
+        console.log('i am shifty')
+      }
 else if (
-  keys.d.pressed 
+  keys.d.pressed && keys.shift.pressed == false
   ) {
-    player.switchSprite('moveRight');
-    player.velocity.x = 4
-    player.lastDirection = 'right'
-    player.panCameraRight({canvas, gameCamera})
+        player.switchSprite('moveRight');
+        player.velocity.x = 4
+        player.lastDirection = 'right'
+        player.panCameraRight({canvas, gameCamera})
   }
 
-else if (keys.a.pressed) {
-  player.switchSprite('moveLeft');
-  player.velocity.x = -4
-  player.lastDirection = 'left'
-  player.panCameraLeft({canvas, gameCamera})}
 
-  else if (keys.f.pressed) {
+
+
+
+if (
+  keys.a.pressed && keys.control.pressed 
+  ) {
+        player.switchSprite('moveLeft');
+        player.velocity.x = -5
+        player.lastDirection = 'left'
+        player.panCameraLeft({canvas, gameCamera})
+  } else
+ if (
+      keys.A.pressed && keys.shift.pressed && onALadder == false || keys.a.pressed && keys.shift.pressed && onALadder == false
+      ) {
+        player.switchSprite('moveLeft');
+        player.velocity.x = -2        
+        player.lastDirection = 'left'
+        player.panCameraLeft({canvas, gameCamera})
+      }
+else if (keys.a.pressed && keys.shift.pressed == false) {
+        player.switchSprite('moveLeft');
+        player.velocity.x = -4
+        player.lastDirection = 'left'
+        player.panCameraLeft({canvas, gameCamera})}
+  else
+
+
+
+ if (keys.f.pressed) {
     if (player.lastDirection === 'right') player.switchSprite('attackRight')
     else player.switchSprite('attackLeft')
     }
   
 
-  else if (player.velocity.y === 0) {
+if (player.velocity.y === 0) {
     if (player.lastDirection === 'right') player.switchSprite('idleRight')
     else player.switchSprite('idleLeft')
   } 
@@ -303,6 +339,7 @@ else if (keys.a.pressed) {
   if (player.velocity.y > .8){
     player.panCameraDown({canvas, gameCamera})
   }
+
   c.restore()    
     }
  //////////////////////////////////////////////////////////////// 
@@ -346,7 +383,7 @@ const startGame = (lvl) => {
   player = new Player({
     position: {
       x: 5,
-      y: 400
+      y: 430
     },
     entityArray,
     collisionBlocks,
@@ -428,6 +465,7 @@ const startGame = (lvl) => {
 // and key down event listener is for user input
  ////////////////////////////////////////////////////////////////   
     addEventListener("keydown", (event) => {
+      console.log(event)
       switch (event.key) {
         case 'd':
           keys.d.pressed = true;
@@ -441,7 +479,22 @@ const startGame = (lvl) => {
         case 'f':
           keys.f.pressed = true;
         break
-        case 'w':
+        case 'A':
+          keys.A.pressed = true;
+        break
+        case 'D':
+          keys.D.pressed = true;
+        break
+        case 'W':
+          keys.W.pressed = true;
+        break
+        case 'S':
+          keys.S.pressed = true;
+        break
+        case 'Shift':
+          keys.shift.pressed = true;
+        break
+        case ' ':
            if (player.velocity.y == 0 || player.velocity.y == 0.8){
           player.velocity.y = -12;
           player.switchSprite('jumpyViking');
@@ -473,8 +526,22 @@ const startGame = (lvl) => {
           keys.f.pressed = false;
         break
         case 'Control':
-          
           keys.control.pressed = false;
+        break
+        case 'A':
+          keys.A.pressed = false;
+        break
+        case 'D':
+          keys.D.pressed = false;
+        break
+        case 'W':
+          keys.W.pressed = false;
+        break
+        case 'S':
+          keys.S.pressed = false;
+        break
+        case 'Shift':
+          keys.shift.pressed = false;
         break
         
       }

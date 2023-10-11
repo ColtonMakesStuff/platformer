@@ -1,9 +1,7 @@
-import { gravity, background, entityArray } from "../script.js";
+import { gravity, keys, background, entityArray } from "../script.js";
 import { collision } from "../data/collisions.js";
 import { Sprite } from "./sprite.js";
-let blockedLeft = false;
-let blockedRight = false;
-
+let onALadder = false
 
 // this housees the players attributes as well as can be used for making non-player objects, also this iterates over the collision checks
 class Player extends Sprite {
@@ -146,7 +144,7 @@ switchSprite(key){
 checkForSideCollsions(){
         for (let i = 0; i < this.collisionBlocks.length; i++) {
             const collisionBlock = this.collisionBlocks[i];
-            if (collisionBlock.type != 'mobRestrictor'){
+            if (collisionBlock.type != 'mobRestrictor' && collisionBlock.type != 'ladder'){
             if (
                 collision({
                 object1: this.hitbox,
@@ -183,10 +181,52 @@ checkForSideCollsions(){
          }
         }
     // check vertical collisions
+ladderTypeCheck(){
+    for (let i = 0; i < this.collisionBlocks.length; i++) {
+        const collisionBlock = this.collisionBlocks[i];
+        if (collisionBlock.type != 'mobRestrictor' && collisionBlock.type === 'ladder'){
+            onALadder = true
+        if (
+            collision({
+            object1: this.hitbox,
+            object2: collisionBlock,
+        })){
+            if (collisionBlock.type == 'ladder' && keys.A.pressed  == true){
+                console.log("i should be left")
+                this.velocity.y = 0 
+                this.position.x -= 2
+            } else
+            if (collisionBlock.type == 'ladder' && keys.W.pressed == true){
+                console.log("i should be up")
+                this.velocity.y = 0 
+                this.position.y -= 2 
+                
+                
+            } else 
+            if (collisionBlock.type == 'ladder' && keys.S.pressed  == true){
+                console.log("i should be down")
+                this.velocity.y = 0 
+                this.position.y += 2 
+            } else
+            if (collisionBlock.type == 'ladder' && keys.D.pressed == true){
+                console.log("i should be right")
+                this.velocity.y = 0 
+                this.position.x += 2 
+                
+            } 
+            
+             else
+             if (collisionBlock.type == 'ladder' && keys.shift.pressed === true){
+               console.log("i should be sticky")
+              this.velocity.y= 0
+             } 
+        }
+ } else { onALadder = false} 
+}}
 checkForVerticalCollsions(){
         for (let i = 0; i < this.collisionBlocks.length; i++) {
             const collisionBlock = this.collisionBlocks[i];
-            if (collisionBlock.type != 'mobRestrictor'){
+            if (collisionBlock.type != 'mobRestrictor' && collisionBlock.type != 'ladder'){
             if (
                 collision({
                 object1: this.hitbox,
@@ -306,6 +346,7 @@ update(){
         //   c.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height)
  
     this.position.x += this.velocity.x
+    this.ladderTypeCheck()
     this.updateHitbox()
     this.checkForSideCollsions()
     this.applyGravity()
@@ -314,8 +355,9 @@ update(){
     this.updateHitbox()
     this.checkForEntityCollsions()
     this.checkPlayerHealth()
+    
 }
 }
  
-export {Player, blockedLeft, blockedRight};
+export {Player, onALadder};
 
