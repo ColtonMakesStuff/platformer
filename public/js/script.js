@@ -14,7 +14,7 @@ const c = canvas.getContext("2d");
 let currentLevel;
 
 const collisionBlocks = []
-let entities = []
+let entityArray = []
 
 canvas.width = 1024
 canvas.height = 576
@@ -130,7 +130,7 @@ const getCollisionBlocks = (lvl) => {
         })
       )
     } else if (tile === 60) {
-      entities.push(
+      entityArray.push(
         new Entity({
           position: {
             x: x * 32,
@@ -204,7 +204,7 @@ let gameCamera = {
       collisionBlocks.forEach(collisionBlock => {
         collisionBlock.update()
       }) 
-      entities.forEach((element) => {
+      entityArray.forEach((element) => {
         element.update()
        
       });
@@ -307,7 +307,7 @@ const startGame = (lvl) => {
       x: 5,
       y: 400
     },
-    entities,
+    entityArray,
     collisionBlocks,
     imageSrc: './img/viking/viking_idle_right.png',
     framerate: 7,
@@ -442,6 +442,5 @@ const startGame = (lvl) => {
    ////////////////////////////////////////////////////////////////
 
 
-
    ////////////////////////////////////////////////////////////////
-    export {c, gravity, keys, startGame, background };
+    export {c, gravity, keys, startGame, background, entityArray };

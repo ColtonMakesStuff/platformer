@@ -102,6 +102,7 @@ const entityCollision = ({object1, object2}) => {
         oneRight >= twoLeft && 
         oneTop <= twoBottom)
         {
+
     return true
         }
         return false

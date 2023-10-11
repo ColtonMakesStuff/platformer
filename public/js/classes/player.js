@@ -1,8 +1,9 @@
-import { gravity, background } from "../script.js";
+import { gravity, background, entityArray } from "../script.js";
 import { collision } from "../data/collisions.js";
 import { Sprite } from "./sprite.js";
 let blockedLeft = false;
 let blockedRight = false;
+
 
 // this housees the players attributes as well as can be used for making non-player objects, also this iterates over the collision checks
 class Player extends Sprite {
@@ -15,11 +16,11 @@ class Player extends Sprite {
       scale = 1.6,
       myHitbox,
       spriteAnimations,
-      entities
+      entityArray
     }) {
       super({ imageSrc, frameBuffer, framerate, scale });
       this.collisionBlocks = collisionBlocks;
-      this.entities = entities;
+      this.entities = entityArray;
       this.position = position;
       this.velocity = { x: 25, y: 1 };
       this.myHitbox = myHitbox;
@@ -218,26 +219,32 @@ checkForEntityCollsions(){
 console.log(entity)
 
 if (entity.type == 'mushroomy') {
-    console.log('i like shrooms')
+    //TODO have player be hurt or have the enemy be squashed 
+   
 }
-if(this.velocity.y > 0 && (this.position.y + this.height) > (entity.position.y + 5)){
+if(this.velocity.y > 0 && (this.position.y) < (entity.position.y)){
     this.velocity.y = -6;
 console.log('squished him')
+
+ console.log(entityArray) 
+ console.log(i)
+    entityArray.splice(i, 1)
+console.log(entityArray)   
 break
 }
 else 
-if (this.lastDirection == 'right' ){
+if (this.position.x > entity.position.x){
+    console.log("player lost health")
     this.velocity.y = -3
+    this.position.x += 45
+    break
+} else {console.log('player lost health')
+this.velocity.y = -3
     this.position.x -= 45
     
     break
 }
-if (this.lastDirection != 'right' ){
-    this.velocity.y = -3
-    this.position.x += 45
-    
-    break
-}
+
 
 
     }
