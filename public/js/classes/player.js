@@ -28,7 +28,26 @@ class Player extends Sprite {
       this.lastDirection = 'right';
       this.spriteAnimations = this.loadSpriteAnimations(spriteAnimations);
       this.camera = this.createCamera();
+      this.healthBuffer = 50,
+      this.elapsedHealthTimeout = 10
+      this.playerHealth = 5
     }
+  checkPlayerHealth(){
+    if (this.playerHealth == 0){ 
+    console.log("you un-alived")}
+  }
+    //establishes buffer for health loss so it can only be lost every 50 frames when in constant health loss situation(spikes? fire?)
+  updateHealthTimeout(){
+    this.elapsedHealthTimeout++
+      
+      if (this.elapsedHealthTimeout % this.healthBuffer === 0 ) 
+      {
+        console.log('player lost health')
+        this.playerHealth--
+        this.elapsedHealthTimeout = 0
+        console.log(this.playerHealth)
+      }
+  }
     // Load sprite animations
   loadSpriteAnimations(spriteAnimations) {
     for (let key in spriteAnimations) {
@@ -137,6 +156,7 @@ checkForSideCollsions(){
 //removes movement conditions from spike blocks and logs ouch                
             if (collisionBlock.type == 'spikes'){
                 // console.log('OUCH!!')
+               
             } else  {               
             if (collisionBlock.type == 'solidTop') {break}else if
             (this.velocity.x > 0){
@@ -184,7 +204,8 @@ checkForVerticalCollsions(){
         } 
         //removes movement conditions from spike blocks and logs ouch                
         else if (collisionBlock.type == 'spikes'){
-                // console.log('OUCH!!')
+                this.updateHealthTimeout()
+                
         } else {   
         if (this.velocity.y > 0){
             this.velocity.y = 0
@@ -234,11 +255,13 @@ break
 }
 else 
 if (this.position.x > entity.position.x){
-    console.log("player lost health")
+    console.log('player lost health')
+    this.playerHealth--
     this.velocity.y = -3
     this.position.x += 45
     break
 } else {console.log('player lost health')
+this.playerHealth--
 this.velocity.y = -3
     this.position.x -= 45
     
@@ -280,6 +303,7 @@ update(){
     this.checkForVerticalCollsions()
     this.updateHitbox()
     this.checkForEntityCollsions()
+    this.checkPlayerHealth()
 }
 }
  
