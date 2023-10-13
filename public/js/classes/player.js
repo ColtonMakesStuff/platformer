@@ -1,7 +1,6 @@
 import { gravity, keys, background, entityArray } from "../script.js";
 import { collision } from "../data/collisions.js";
 import { Sprite } from "./sprite.js";
-let onALadder = false
 
 // this housees the players attributes as well as can be used for making non-player objects, also this iterates over the collision checks
 class Player extends Sprite {
@@ -26,15 +25,17 @@ class Player extends Sprite {
       this.lastDirection = 'right';
       this.spriteAnimations = this.loadSpriteAnimations(spriteAnimations);
       this.camera = this.createCamera();
-      this.healthBuffer = 50,
-      this.elapsedHealthTimeout = 10
+      this.healthBuffer = 40,
+      this.elapsedHealthTimeout = 8
       this.playerHealth = 5
+      this.onALadder = false
+      this.break = false
     }
   checkPlayerHealth(){
-    if (this.playerHealth < 1){ 
-    console.log("you un-alived")}
+    if (this.playerHealth < 1){ this.switchSprite('dedViking')
+    this.break = true}
   }
-    //establishes buffer for health loss so it can only be lost every 50 frames when in constant health loss situation(spikes? fire?)
+    //establishes buffer for health loss so it can only be lost every so many  frames when in constant health loss situation(spikes? fire?)
   updateHealthTimeout(){
     this.elapsedHealthTimeout++
       
@@ -44,7 +45,10 @@ class Player extends Sprite {
         this.playerHealth--
         this.elapsedHealthTimeout = 0
         console.log(this.playerHealth)
+        
       }
+      
+  
   }
     // Load sprite animations
   loadSpriteAnimations(spriteAnimations) {
@@ -73,7 +77,7 @@ class Player extends Sprite {
         x: this.position.x - 180,
         y: this.position.y - 100
       },
-      height: 250,
+      height: 350,
       width: 400
     };
   }
@@ -102,7 +106,7 @@ switchSprite(key){
             x: this.position.x - 180,
             y: this.position.y - 100
         },
-       height: 250,
+       height: 350,
        width:400
      } 
     }
@@ -154,8 +158,12 @@ checkForSideCollsions(){
 //removes movement conditions from spike blocks and logs ouch                
             if (collisionBlock.type == 'spikes'){
                 // console.log('OUCH!!')
+                if (this.lastDirection === 'right') this.switchSprite('hurtRight')
+                else this.switchSprite('hurtLeft')
                
-            } else  {               
+            } else  {   if (collisionBlock.type == 'bouncey'){
+               
+            } else              
             if (collisionBlock.type == 'solidTop') {break}else if
             (this.velocity.x > 0){
                 this.velocity.x = 0
@@ -185,48 +193,51 @@ ladderTypeCheck(){
     for (let i = 0; i < this.collisionBlocks.length; i++) {
         const collisionBlock = this.collisionBlocks[i];
         if (collisionBlock.type != 'mobRestrictor' && collisionBlock.type === 'ladder'){
-            onALadder = false
         if (
             collision({
             object1: this.hitbox,
             object2: collisionBlock,
         })){
             if (collisionBlock.type == 'ladder' && keys.A.pressed  == true){
-                onALadder = true
+                this.onALadder = true
                 console.log("i should be left")
                 this.velocity.y = 0 
                 this.position.x -= 2
+                this.switchSprite('climbing');
             } else
             if (collisionBlock.type == 'ladder' && keys.W.pressed == true){
-                onALadder = true
+                this.onALadder = true
                 console.log("i should be up")
                 this.velocity.y = 0 
                 this.position.y -= 2 
-                
+                this.switchSprite('climbing');
                 
             } else 
             if (collisionBlock.type == 'ladder' && keys.S.pressed  == true){
-                onALadder = true
+                this.onALadder = true
                 console.log("i should be down")
                 this.velocity.y = 0 
                 this.position.y += 2 
+                this.switchSprite('climbing');
             } else
             if (collisionBlock.type == 'ladder' && keys.D.pressed == true){
-                onALadder = true
+                this.onALadder = true
                 console.log("i should be right")
                 this.velocity.y = 0 
                 this.position.x += 2 
+                this.switchSprite('climbing');
                 
             } 
             
              else
              if (collisionBlock.type == 'ladder' && keys.shift.pressed == true){
-                onALadder = true
+                this.onALadder = true
                console.log("i should be sticky")
               this.velocity.y= 0
+              this.switchSprite('stillClimb');
              } 
         }
- } else { onALadder = false} 
+ } else {  this.onALadder = false} 
 }}
 checkForVerticalCollsions(){
         for (let i = 0; i < this.collisionBlocks.length; i++) {
@@ -313,13 +324,16 @@ if (this.position.x > entity.position.x){
     console.log('player lost health')
     this.playerHealth--
     this.velocity.y = -3
-    this.position.x += 45
+    this.position.x += 30
+    if (this.lastDirection === 'right') this.switchSprite('hurtRight')
+    else this.switchSprite('hurtLeft')
     break
 } else {console.log('player lost health')
 this.playerHealth--
 this.velocity.y = -3
-    this.position.x -= 45
-    
+    this.position.x -= 30
+    if (this.lastDirection === 'right') this.switchSprite('hurtRight')
+    else this.switchSprite('hurtLeft')
     break
 }
  } else if (entity.type == 'coin'){
@@ -330,7 +344,7 @@ this.velocity.y = -3
   }
 }
 update(){
-    this.updateFrames()
+   if (this.break === false){ this.updateFrames()
     this.updateCamera()
     this.updateHitbox()
 
@@ -360,9 +374,9 @@ update(){
     this.updateHitbox()
     this.checkForEntityCollsions()
     this.checkPlayerHealth()
-    
+} else {this.draw()}
 }
 }
  
-export {Player, onALadder};
+export {Player};
 

@@ -3,7 +3,7 @@
 import { levelOneArray, levelOneLongArray } from "./data/collisions.js";
 import { Sprite } from "./classes/sprite.js";
 import { CollisionBlock } from "./classes/CollisionBlock.js";
-import { Player, onALadder} from "./classes/player.js";
+import { Player} from "./classes/player.js";
 import { Entity} from "./classes/Entity.js";
 
 const canvas = document.getElementById("canvas")
@@ -198,6 +198,35 @@ const getCollisionBlocks = (lvl) => {
           gravity: false
   })
       )
+    } else if (tile === 41) {
+      entityArray.push(
+        new Entity({
+          position: {
+            x: x * 32,
+            y: y * 32,
+          },
+          collisionBlocks,
+          type: "coin",
+          scale: 1/2,
+          imageSrc: './img/win_coin.png',
+          framerate: 6,
+          frameBuffer: 7,
+          // spriteAnimations :{
+          //       moveRight: {
+          //         imageSrc: './img/viking/viking_walk_right.png',
+          //         framerate: 8,
+          //         frameBuffer: 1
+          // }},
+          myHitbox: {
+                addX: 11,
+                addY: 20 ,
+                width: 28,
+                height: 28,
+          },
+          movement: false,
+          gravity: false
+  })
+      )
     }
   })
 });}
@@ -264,10 +293,11 @@ let gameCamera = {
         element.update()
        
       });
+      
       player.update()
+player.velocity.x = 0 
 
-
-player.velocity.x = 0  
+ 
 if (
   keys.d.pressed && keys.control.pressed 
   ){ 
@@ -277,7 +307,7 @@ if (
         player.panCameraRight({canvas, gameCamera})
   }
 else if (
-      keys.D.pressed &&  keys.shift.pressed && onALadder == false || keys.d.pressed && keys.shift.pressed && onALadder == false 
+      keys.D.pressed &&  keys.shift.pressed && player.onALadder == false || keys.d.pressed && keys.shift.pressed && onALadder == false 
       ){ 
         player.switchSprite('moveRight');
         player.velocity.x = 2
@@ -297,7 +327,6 @@ else if (
 
 
 
-
 if (
   keys.a.pressed && keys.control.pressed 
   ) {
@@ -307,7 +336,7 @@ if (
         player.panCameraLeft({canvas, gameCamera})
   } else
  if (
-      keys.A.pressed && keys.shift.pressed && onALadder == false || keys.a.pressed && keys.shift.pressed && onALadder == false
+      keys.A.pressed && keys.shift.pressed && player.onALadder == false || keys.a.pressed && keys.shift.pressed && onALadder == false
       ) {
         player.switchSprite('moveLeft');
         player.velocity.x = -2        
@@ -322,12 +351,12 @@ else if (keys.a.pressed && keys.shift.pressed == false) {
   else
 
 
-
- if (keys.f.pressed) {
-    if (player.lastDirection === 'right') player.switchSprite('attackRight')
-    else player.switchSprite('attackLeft')
-    }
+//  if (keys.f.pressed) {
+//     if (player.lastDirection === 'right') player.switchSprite('attackRight')
+//     else player.switchSprite('attackLeft')
+//     }
   
+    
 
 if (player.velocity.y === 0) {
     if (player.lastDirection === 'right') player.switchSprite('idleRight')
@@ -394,32 +423,32 @@ const startGame = (lvl) => {
   moveRight: {
     imageSrc: './img/viking/viking_walk_right.png',
     framerate: 8,
-    frameBuffer: 1
+    frameBuffer: 3
   },
   moveLeft: {
     imageSrc: './img/viking/viking_walk_left.png',
     framerate: 8,
-    frameBuffer: 1
+    frameBuffer: 3
   },
   attackRight: {
     imageSrc: './img/viking/viking_sword_slice_right.png',
     framerate: 5,
-    frameBuffer: 3
+    frameBuffer: 6
   },
   attackLeft: {
     imageSrc: './img/viking/viking_sword_slice_left.png',
     framerate: 6,
-    frameBuffer: 3
+    frameBuffer: 6
   },
   idleLeft: {
     imageSrc: './img/viking/viking_idle_left.png',
     framerate: 7,
-    frameBuffer: 3
+    frameBuffer: 4
   },
   idleRight: {
     imageSrc: './img/viking/viking_idle_right.png',
     framerate: 7,
-    frameBuffer: 3
+    frameBuffer: 4
   },
   jumpyViking: {
     imageSrc: './img/viking/jumpy_viking.png',
@@ -441,11 +470,23 @@ const startGame = (lvl) => {
     framerate: 2,
     frameBuffer: 2
   },
+  climbing: {
+    imageSrc: './img/viking/climbing_viking.png',
+    framerate: 4,
+    frameBuffer: 4
+  },
+  stillClimb: {
+    imageSrc: './img/viking/still_viking_climbing.png',
+    framerate: 1,
+    frameBuffer: 1
+  },
   hurtLeft: {
     imageSrc: './img/viking/hurt_viking_left.png',
     framerate: 2,
     frameBuffer: 2
   },
+
+
 
   },
     scale: 1.6,
