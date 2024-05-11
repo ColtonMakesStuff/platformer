@@ -3,7 +3,7 @@ a platformer game that has levels, enemies and points that can be collected
 
 ## How to run
 * first clone the repository
-* then run 
+* then run-
   * <npm i>
   * <node server.js>
 * then open in http://localhost:3000
